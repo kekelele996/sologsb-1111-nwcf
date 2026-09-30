@@ -49,9 +49,11 @@ export const useBoxStore = create<BoxState>()((set, get) => ({
       slotLength: Number(input.slotLength) || 0,
       boxedAt: input.boxedAt,
       shelfPos: input.shelfPos,
+      loanStatus: '在库',
       damagedSlots: input.damagedSlots ?? [],
       operator: input.operator.trim(),
       remark: input.remark?.trim() || undefined,
+      updatedAt: new Date().toISOString(),
     };
     await db.boxes.put(box);
     set({ boxes: [...get().boxes, box] });
@@ -61,7 +63,7 @@ export const useBoxStore = create<BoxState>()((set, get) => ({
   updateBox: async (id, patch) => {
     const current = get().boxes.find((b) => b.id === id);
     if (!current) return;
-    const next: CoreBox = { ...current, ...patch };
+    const next: CoreBox = { ...current, ...patch, updatedAt: new Date().toISOString() };
     await db.boxes.put(next);
     set({ boxes: get().boxes.map((b) => (b.id === id ? next : b)) });
   },
@@ -77,7 +79,7 @@ export const useBoxStore = create<BoxState>()((set, get) => ({
     const damagedSlots = current.damagedSlots.includes(slot)
       ? current.damagedSlots.filter((s) => s !== slot)
       : [...current.damagedSlots, slot].sort((a, b) => a - b);
-    const next: CoreBox = { ...current, damagedSlots };
+    const next: CoreBox = { ...current, damagedSlots, updatedAt: new Date().toISOString() };
     await db.boxes.put(next);
     set({ boxes: get().boxes.map((b) => (b.id === id ? next : b)) });
   },

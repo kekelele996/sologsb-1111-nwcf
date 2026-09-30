@@ -8,7 +8,7 @@ import type { LithoLog } from '../types/litho-log';
 export const DB_NAME = 'gbdrillcore-db';
 
 /** 当前 schema 版本，与 db.version(n) 对应 */
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 class DrillCoreDB extends Dexie {
   holes!: Table<DrillHole, string>;
@@ -46,6 +46,26 @@ class DrillCoreDB extends Dexie {
           .modify((row: LithoLog) => {
             if (typeof row.rqd !== 'number') {
               row.rqd = 0;
+            }
+          });
+      });
+
+    // v3：岩芯箱增加借出状态与对账来源/冲突标记；回填历史借出状态为「在库」。
+    this.version(3)
+      .stores({
+        holes: 'id, holeNo, rigNo, shift, startDate',
+        runs: 'id, runNo, holeId, fromDepth, toDepth, shift',
+        boxes: 'id, boxNo, holeId, shelfPos, loanStatus, mergeGroupId, mergeStatus, boxedAt',
+        lithos: 'id, holeId, fromDepth, toDepth, [holeId+fromDepth], lithology',
+        meta: 'key',
+      })
+      .upgrade(async (tx) => {
+        await tx
+          .table('boxes')
+          .toCollection()
+          .modify((row: CoreBox) => {
+            if (!row.loanStatus) {
+              row.loanStatus = '在库';
             }
           });
       });

@@ -17,13 +17,32 @@ export interface CoreBox {
   boxedAt: string;
   /** 库架位 */
   shelfPos: string;
+  /** 借出状态（岩芯库口径：在库 / 借出） */
+  loanStatus?: LoanStatus;
   /** 破损格（格序号，从 1 开始） */
   damagedSlots: number[];
   /** 装箱人 */
   operator: string;
   /** 备注 */
   remark?: string;
+  /** 对账来源：现场版 / 库管版 / 合并版 */
+  mergeSide?: MergeSide;
+  /** 冲突组 id：两边都动过的箱，两版共用同一个 mergeGroupId */
+  mergeGroupId?: string;
+  /** 冲突处理状态：待认 / 已保留现场版 / 已保留库管版 */
+  mergeStatus?: MergeStatus;
+  /** 最近一次对账写入时间 ISO */
+  updatedAt?: string;
 }
+
+/** 借出状态（岩芯库出入库口径） */
+export type LoanStatus = '在库' | '借出';
+
+/** 对账来源侧 */
+export type MergeSide = 'field' | 'warehouse' | 'merged';
+
+/** 冲突箱处理状态 */
+export type MergeStatus = 'pending' | 'kept-field' | 'kept-warehouse';
 
 /** 岩芯箱与回次的连续性校验结果 */
 export interface BoxContinuity {
