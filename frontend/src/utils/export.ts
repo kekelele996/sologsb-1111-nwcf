@@ -70,8 +70,15 @@ export async function importBackup(text: string): Promise<{ holes: number; runs:
     boxes: payload.boxes?.length ?? 0,
     lithos: payload.lithos?.length ?? 0,
   };
-  await db.transaction('rw', db.holes, db.runs, db.boxes, db.lithos, async () => {
-    await Promise.all([db.holes.clear(), db.runs.clear(), db.boxes.clear(), db.lithos.clear()]);
+  await db.transaction('rw', [db.holes, db.runs, db.boxes, db.lithos, db.conflicts, db.reconcileState], async () => {
+    await Promise.all([
+      db.holes.clear(),
+      db.runs.clear(),
+      db.boxes.clear(),
+      db.lithos.clear(),
+      db.conflicts.clear(),
+      db.reconcileState.clear(),
+    ]);
     if (payload.holes?.length) await db.holes.bulkPut(payload.holes as never[]);
     if (payload.runs?.length) await db.runs.bulkPut(payload.runs as never[]);
     if (payload.boxes?.length) await db.boxes.bulkPut(payload.boxes as never[]);

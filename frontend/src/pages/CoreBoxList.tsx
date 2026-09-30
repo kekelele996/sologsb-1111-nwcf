@@ -8,7 +8,7 @@ import EmptyPanel from '../components/common/EmptyPanel';
 import { useHoleStore } from '../stores/holeStore';
 import { useRunStore } from '../stores/runStore';
 import { useBoxStore } from '../stores/boxStore';
-import { SHELF_POSITIONS, type CoreBox, type BoxContinuity } from '../types/core-box';
+import { SHELF_POSITIONS, LOAN_STATUSES, LOAN_STATUS_COLOR, type CoreBox, type BoxContinuity } from '../types/core-box';
 import { boxCapacityOk, checkBoxContinuity, validateRange } from '../utils/recovery';
 
 const { Title, Paragraph, Text } = Typography;
@@ -22,6 +22,10 @@ interface BoxFormValues {
   slotLength: number;
   boxedAt: Dayjs;
   shelfPos: string;
+  loanStatus: CoreBox['loanStatus'];
+  loanTo?: string;
+  runNo?: string;
+  lithology?: string;
   operator: string;
   damagedText?: string;
   remark?: string;
@@ -85,6 +89,10 @@ export default function CoreBoxList() {
       slotLength: 2.5,
       boxedAt: dayjs(),
       shelfPos: SHELF_POSITIONS[0],
+      loanStatus: '在库',
+      loanTo: '',
+      runNo: '',
+      lithology: '',
       operator: '高振华',
       damagedText: '',
     } as unknown as BoxFormValues);
@@ -103,6 +111,10 @@ export default function CoreBoxList() {
       slotLength: record.slotLength,
       boxedAt: dayjs(record.boxedAt),
       shelfPos: record.shelfPos,
+      loanStatus: record.loanStatus,
+      loanTo: record.loanTo,
+      runNo: record.runNo,
+      lithology: record.lithology,
       operator: record.operator,
       damagedText: record.damagedSlots.join(','),
       remark: record.remark,
@@ -126,6 +138,11 @@ export default function CoreBoxList() {
       slotLength: Number(values.slotLength) || 0,
       boxedAt: values.boxedAt.toISOString(),
       shelfPos: values.shelfPos,
+      loanStatus: values.loanStatus,
+      loanTo: values.loanStatus === '在库' ? undefined : values.loanTo,
+      loanedAt: values.loanStatus === '在库' ? undefined : (editing?.loanedAt ?? new Date().toISOString()),
+      runNo: values.runNo,
+      lithology: values.lithology,
       operator: values.operator,
       damagedSlots: parseSlots(values.damagedText).filter((slot) => slot <= (Number(values.slots) || 0)),
       remark: values.remark,
@@ -153,9 +170,23 @@ export default function CoreBoxList() {
   const columns: TableColumnsType<CoreBox> = [
     { title: '箱号', dataIndex: 'boxNo', width: 130, render: (v: string) => <Text strong>{v}</Text> },
     { title: '深度区间(m)', width: 130, render: (_, row) => `${row.fromDepth}~${row.toDepth}` },
+    { title: '回次', dataIndex: 'runNo', width: 150, render: (v?: string) => v ?? <Text type="secondary">—</Text> },
+    { title: '岩性', dataIndex: 'lithology', width: 110, render: (v?: string) => v ?? <Text type="secondary">—</Text> },
     { title: '格数', dataIndex: 'slots', width: 70, align: 'right' },
     { title: '每格长度(m)', dataIndex: 'slotLength', width: 110, align: 'right' },
     { title: '库架位', dataIndex: 'shelfPos', width: 110 },
+    {
+      title: '借出状态',
+      width: 130,
+      render: (_, row) => (
+        <Space size={4} direction="vertical" style={{ lineHeight: 1.2 }}>
+          <Tag color={LOAN_STATUS_COLOR[row.loanStatus]} style={{ marginInlineEnd: 0 }}>
+            {row.loanStatus}
+          </Tag>
+          {row.loanStatus !== '在库' && row.loanTo ? <Text type="secondary" style={{ fontSize: 12 }}>{row.loanTo}</Text> : null}
+        </Space>
+      ),
+    },
     { title: '装箱日期', dataIndex: 'boxedAt', width: 110, render: (v: string) => dayjs(v).format('YYYY-MM-DD') },
     { title: '装箱人', dataIndex: 'operator', width: 90 },
     {
@@ -246,7 +277,7 @@ export default function CoreBoxList() {
           </Col>
           <Col xs={24}>
             <Card size="small" title="岩芯箱台账">
-              <Table rowKey="id" size="small" columns={columns} dataSource={holeBoxes} pagination={{ pageSize: 6 }} scroll={{ x: 1400 }} />
+              <Table rowKey="id" size="small" columns={columns} dataSource={holeBoxes} pagination={{ pageSize: 6 }} scroll={{ x: 1850 }} />
             </Card>
           </Col>
         </Row>
@@ -291,6 +322,30 @@ export default function CoreBoxList() {
             </Form.Item>
             <Form.Item name="operator" label="装箱人" rules={[{ required: true, message: '请输入装箱人' }]}>
               <Input style={{ width: 140 }} maxLength={16} placeholder="装箱人" />
+            </Form.Item>
+          </Space>
+
+          <Space size={12} style={{ display: 'flex' }} align="start">
+            <Form.Item name="runNo" label="箱内回次（现场）">
+              <Input style={{ width: 200 }} maxLength={40} placeholder="如 2401-01~2401-05" />
+            </Form.Item>
+            <Form.Item name="lithology" label="主要岩性（现场）">
+              <Input style={{ width: 160 }} maxLength={20} placeholder="如 花岗闪长岩" />
+            </Form.Item>
+          </Space>
+
+          <Space size={12} style={{ display: 'flex' }} align="start">
+            <Form.Item name="loanStatus" label="借出状态（岩芯库）" rules={[{ required: true, message: '请选择借出状态' }]}>
+              <Select style={{ width: 140 }} options={LOAN_STATUSES.map((v) => ({ label: v, value: v }))} />
+            </Form.Item>
+            <Form.Item noStyle shouldUpdate={(prev, cur) => prev.loanStatus !== cur.loanStatus}>
+              {({ getFieldValue }) =>
+                getFieldValue('loanStatus') !== '在库' ? (
+                  <Form.Item name="loanTo" label="借出人/单位">
+                    <Input style={{ width: 200 }} maxLength={30} placeholder="如 中心实验室" />
+                  </Form.Item>
+                ) : null
+              }
             </Form.Item>
           </Space>
 

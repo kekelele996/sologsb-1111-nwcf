@@ -137,13 +137,13 @@ function buildRuns(): DrillRun[] {
 export const SEED_RUNS: DrillRun[] = buildRuns();
 
 export const SEED_BOXES: CoreBox[] = [
-  { id: 'box-001', boxNo: 'X-2402-01', holeId: 'hole-002', fromDepth: 0, toDepth: 25, slots: 10, slotLength: 2.5, boxedAt: daysAgo(40), shelfPos: 'A 区 1 架', damagedSlots: [], operator: '高振华' },
-  { id: 'box-002', boxNo: 'X-2402-02', holeId: 'hole-002', fromDepth: 25, toDepth: 50, slots: 10, slotLength: 2.5, boxedAt: daysAgo(39), shelfPos: 'A 区 1 架', damagedSlots: [4], operator: '高振华', remark: '第 4 格岩芯破碎' },
-  { id: 'box-003', boxNo: 'X-2402-03', holeId: 'hole-002', fromDepth: 50, toDepth: 75, slots: 10, slotLength: 2.5, boxedAt: daysAgo(38), shelfPos: 'A 区 2 架', damagedSlots: [], operator: '周明' },
-  { id: 'box-004', boxNo: 'X-2403-01', holeId: 'hole-003', fromDepth: 0, toDepth: 30, slots: 12, slotLength: 2.5, boxedAt: daysAgo(52), shelfPos: 'B 区 1 架', damagedSlots: [], operator: '周明' },
-  { id: 'box-005', boxNo: 'X-2403-02', holeId: 'hole-003', fromDepth: 30, toDepth: 60, slots: 12, slotLength: 2.5, boxedAt: daysAgo(51), shelfPos: 'B 区 1 架', damagedSlots: [7, 8], operator: '周明', remark: '断层破碎带，两格岩芯缺失' },
-  { id: 'box-006', boxNo: 'X-2404-01', holeId: 'hole-004', fromDepth: 0, toDepth: 28, slots: 12, slotLength: 2.5, boxedAt: daysAgo(30), shelfPos: 'B 区 2 架', damagedSlots: [], operator: '赵晓峰' },
-  { id: 'box-007', boxNo: 'X-2401-01', holeId: 'hole-001', fromDepth: 0, toDepth: 26, slots: 11, slotLength: 2.5, boxedAt: daysAgo(22), shelfPos: 'C 区 1 架', damagedSlots: [], operator: '高振华' },
+  { id: 'box-001', boxNo: 'X-2402-01', holeId: 'hole-002', fromDepth: 0, toDepth: 25, slots: 10, slotLength: 2.5, boxedAt: daysAgo(40), shelfPos: 'A 区 1 架', loanStatus: '在库', runNo: '2402-01~2402-05', lithology: '花岗闪长岩', damagedSlots: [], operator: '高振华' },
+  { id: 'box-002', boxNo: 'X-2402-02', holeId: 'hole-002', fromDepth: 25, toDepth: 50, slots: 10, slotLength: 2.5, boxedAt: daysAgo(39), shelfPos: 'A 区 1 架', loanStatus: '借出', loanTo: '中心实验室', loanedAt: daysAgo(3), runNo: '2402-06~2402-10', lithology: '花岗闪长岩', damagedSlots: [4], operator: '高振华', remark: '第 4 格岩芯破碎' },
+  { id: 'box-003', boxNo: 'X-2402-03', holeId: 'hole-002', fromDepth: 50, toDepth: 75, slots: 10, slotLength: 2.5, boxedAt: daysAgo(38), shelfPos: 'A 区 2 架', loanStatus: '在库', runNo: '2402-11~2402-15', lithology: '矽卡岩', damagedSlots: [], operator: '周明' },
+  { id: 'box-004', boxNo: 'X-2403-01', holeId: 'hole-003', fromDepth: 0, toDepth: 30, slots: 12, slotLength: 2.5, boxedAt: daysAgo(52), shelfPos: 'B 区 1 架', loanStatus: '在库', runNo: '2403-01~2403-06', lithology: '花岗闪长岩', damagedSlots: [], operator: '周明' },
+  { id: 'box-005', boxNo: 'X-2403-02', holeId: 'hole-003', fromDepth: 30, toDepth: 60, slots: 12, slotLength: 2.5, boxedAt: daysAgo(51), shelfPos: 'B 区 1 架', loanStatus: '归还中', loanTo: '地质组', loanedAt: daysAgo(1), runNo: '2403-07~2403-12', lithology: '断层角砾岩', damagedSlots: [7, 8], operator: '周明', remark: '断层破碎带，两格岩芯缺失' },
+  { id: 'box-006', boxNo: 'X-2404-01', holeId: 'hole-004', fromDepth: 0, toDepth: 28, slots: 12, slotLength: 2.5, boxedAt: daysAgo(30), shelfPos: 'B 区 2 架', loanStatus: '在库', runNo: '2404-01~2404-06', lithology: '花岗闪长岩', damagedSlots: [], operator: '赵晓峰' },
+  { id: 'box-007', boxNo: 'X-2401-01', holeId: 'hole-001', fromDepth: 0, toDepth: 26, slots: 11, slotLength: 2.5, boxedAt: daysAgo(22), shelfPos: 'C 区 1 架', loanStatus: '在库', runNo: '2401-01~2401-06', lithology: '花岗闪长岩', damagedSlots: [], operator: '高振华' },
 ];
 
 export const SEED_LITHOS: LithoLog[] = [

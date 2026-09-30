@@ -7,6 +7,7 @@ import {
   ExperimentOutlined,
   ProfileOutlined,
   BarsOutlined,
+  SwapOutlined,
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { seedIfEmpty } from './utils/seed';
@@ -24,6 +25,7 @@ const MENU_ITEMS = [
   { key: '/holes', icon: <DatabaseOutlined />, label: <Link to="/holes">钻孔台帐</Link> },
   { key: '/runs', icon: <BarsOutlined />, label: <Link to="/runs">回次记录</Link> },
   { key: '/boxes', icon: <ProfileOutlined />, label: <Link to="/boxes">岩芯箱</Link> },
+  { key: '/reconcile', icon: <SwapOutlined />, label: <Link to="/reconcile">对账合并</Link> },
   { key: '/lithology', icon: <ExperimentOutlined />, label: <Link to="/lithology">岩性编录</Link> },
 ];
 
